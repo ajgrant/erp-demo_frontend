@@ -29,13 +29,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useSession } from "next-auth/react";
 
 const data = {
-  user: {
-    name: "admin",
-    email: "admin@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
       title: "Dashboard",
@@ -133,6 +129,14 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data: session } = useSession();
+  const userData = {
+    name: session?.user?.name ?? "none",
+    email: session?.user?.email ?? "none",
+    avatar: session?.user?.image ?? "none",
+    firstName: session?.user?.firstName ?? "none",
+    lastName: session?.user?.lastName ?? "none",
+  };
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -158,7 +162,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        {session?.user && <NavUser user={userData} />}
       </SidebarFooter>
     </Sidebar>
   );
