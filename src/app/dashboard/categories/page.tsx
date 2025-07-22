@@ -25,8 +25,7 @@ import { Sheet } from "@/components/ui/sheet";
 import { New } from "./new";
 import { toast } from "sonner";
 import { Alert } from "@/components/alert";
-import { set } from "zod";
-import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { AlertDialog } from "@/components/ui/alert-dialog";
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<Payment[]>([]);

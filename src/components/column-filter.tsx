@@ -9,17 +9,21 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { FilterX, Funnel } from "lucide-react";
+import { format } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 
 export default function ColumnFilter({
   label,
   value,
   onChange,
   placeholder,
+  type = "text",
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  type?: "text" | "date";
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState(value || "");
@@ -58,12 +62,29 @@ export default function ColumnFilter({
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-64 p-4">
-            <Input
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder={placeholder || "Filter..."}
-              className="mb-2"
-            />
+            {type === "date" ? (
+              <Input
+                type="date"
+                value={inputValue}
+                onChange={(e) => {
+                  // convert the UTC timestamp into the local timezone
+                  const localDate = toZonedTime(
+                    e.target.value,
+                    Intl.DateTimeFormat().resolvedOptions().timeZone
+                  );
+                  setInputValue(format(localDate, "yyyy-MM-dd"));
+                }}
+                placeholder={placeholder || "Filter..."}
+                className="mb-2"
+              />
+            ) : type === "text" ? (
+              <Input
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder={placeholder || "Filter..."}
+                className="mb-2"
+              />
+            ) : null}
             <div className="flex justify-end space-x-2">
               <Button
                 variant="outline"
